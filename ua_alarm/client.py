@@ -1,5 +1,5 @@
 from typing import List, Optional, Union
-from ukrainealarm import types
+from ua_alarm import types
 from aiohttp import ClientSession
 
 class Client:
