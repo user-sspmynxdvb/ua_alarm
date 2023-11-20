@@ -1,16 +1,16 @@
-import setuptools
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setuptools.setup(
+setup(
     name="ua_alarm",
     author="user-sspmynxdvb",
-    version="1.3.0",
+    version="1.3.1",
     description="Implements api.ua_alarm.com API that returns info about Ukraine air raid alarms.",
     license="GNUv3",
     url="https://github.com/user-sspmynxdvb/ua_alarm",
-    packages=["ua_alarm"],
+    packages=find_packages(),
     install_requires=[
         'aiohttp>=3.9.0', 'pydantic>=2.5.1'
     ],
