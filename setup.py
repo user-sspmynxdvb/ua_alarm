@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="ua_alarm",
     author="user-sspmynxdvb",
-    version="1.0",
+    version="1.1",
     description="Implements api.ua_alarm.com API that returns info about Ukraine air raid alarms.",
     license="GNUv3",
     url="https://github.com/user-sspmynxdvb/ua_alarm",
