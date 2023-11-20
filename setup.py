@@ -6,13 +6,13 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="ua_alarm",
     author="user-sspmynxdvb",
-    version="1.1",
+    version="1.2",
     description="Implements api.ua_alarm.com API that returns info about Ukraine air raid alarms.",
     license="GNUv3",
     url="https://github.com/user-sspmynxdvb/ua_alarm",
-    packages=setuptools.find_packages(),
+    packages=["src"],
     install_requires=[
-        'aiohttp', 'pydantic'
+        'aiohttp>=3.9.0', 'pydantic>=2.5.1'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
