@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-class RegionAlarm(BaseModel):
+class RegionAlarmModel(BaseModel):
     regionId: str
     startDate: datetime
     endDate: datetime

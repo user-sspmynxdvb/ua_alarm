@@ -12,12 +12,12 @@ class Client:
 
     Methods:
         __init__(api_token: str): Initialize the UkraineAlertApiClient with an API token.
-        _make_request(method: str, endpoint: str, params: Optional[dict] = None, data: Optional[dict] = None) -> Union[types.Alert, types.AlertModification, types.RegionAlarmsHistory, types.RegionsView, types.WebHook]: Make a request to the UkraineAlert API.
-        get_alerts() -> List[types.Alert]: Get a list of alerts.
-        get_region_alerts(region_id: str|int) -> List[types.Alert]: Get alerts for a specific region.
+        _make_request(method: str, endpoint: str, params: Optional[dict] = None, data: Optional[dict] = None) -> Union[types.AlertRegionModel, types.AlertModification, types.RegionAlarmsHistory, types.RegionsViewModel, types.WebHook]: Make a request to the UkraineAlert API.
+        get_alerts() -> List[types.AlertRegionModel]: Get a list of alerts.
+        get_region_alerts(region_id: str|int) -> List[types.AlertRegionModel]: Get alerts for a specific region.
         get_alert_status() -> types.AlertModification: Get the status of alerts.
         get_region_history(region_id: str|int) -> types.RegionAlarmsHistory: Get the history of alerts for a specific region.
-        get_regions() -> types.RegionsView: Get information about regions.
+        get_regions() -> types.RegionsViewModel: Get information about regions.
         subscribe_to_webhook(webhook_data: dict) -> types.WebHook: Subscribe to a webhook.
         update_webhook(webhook_data: dict) -> None: Update an existing webhook.
         unsubscribe_from_webhook(webhook_data: dict) -> None: Unsubscribe from a webhook.
@@ -35,7 +35,7 @@ class Client:
             "Authorization": api_token
         }
 
-    async def _make_request(self, method: str, endpoint: str, params: Optional[dict] = None, data: Optional[dict] = None) -> Union[types.Alert, types.AlertModification, types.RegionAlarmsHistory, types.RegionsView, types.WebHook]:
+    async def _make_request(self, method: str, endpoint: str, params: Optional[dict] = None, data: Optional[dict] = None) -> Union[types.AlertRegionModel, types.AlertModification, types.RegionAlarmsHistory, types.RegionsViewModel, types.WebHook]:
         """
         Makes a request to the UkraineAlert API.
 
@@ -46,7 +46,7 @@ class Client:
             data (Optional[dict]): Optional data payload for the request.
 
         Returns:
-            Union[types.Alert, types.AlertModification, types.RegionAlarmsHistory, types.RegionsView, types.WebHook]: The response from the API based on the endpoint accessed.
+            Union[types.AlertRegionModel, types.AlertModification, types.RegionAlarmsHistory, types.RegionsViewModel, types.WebHook]: The response from the API based on the endpoint accessed.
         """
         url = f"{self.base_url}{endpoint}"
         async with ClientSession(headers=self.headers) as session:
@@ -59,22 +59,22 @@ class Client:
                 elif endpoint == "/api/v3/alerts/regionHistory":
                     return [types.RegionAlarmsHistory(**item) for item in response_json]
                 elif endpoint == "/api/v3/regions":
-                    return types.RegionsView(**response_json)
+                    return types.RegionsViewModel(**response_json)
                 elif endpoint == "/api/v3/webhook":
                     return types.WebHook(**response_json)
                 elif "/api/v3/alerts" in endpoint:
-                    return [types.Alert(**item) for item in response_json]
+                    return [types.AlertRegionModel(**item) for item in response_json]
 
-    async def get_alerts(self) -> List[types.Alert]:
+    async def get_alerts(self) -> List[types.AlertRegionModel]:
         """
         Retrieves a list of alerts from the UkraineAlert API.
 
         Returns:
-            List[types.Alert]: A list of types.Alert objects.
+            List[types.AlertRegionModel]: A list of types.AlertRegionModel objects.
         """
         return await self._make_request("GET", "/api/v3/alerts")
 
-    async def get_region_alerts(self, region_id: str|int) -> List[types.Alert]:
+    async def get_region_alerts(self, region_id: str|int) -> List[types.AlertRegionModel]:
         """
         Retrieves alerts for a specific region from the UkraineAlert API.
 
@@ -82,7 +82,7 @@ class Client:
             region_id (str or int): The ID of the region for which alerts are requested.
 
         Returns:
-            List[types.Alert]: A list of types.Alert objects for the specified region.
+            List[types.AlertRegionModel]: A list of types.AlertRegionModel objects for the specified region.
         """
         return await self._make_request("GET", f"/api/v3/alerts/{region_id}")
 
@@ -108,12 +108,12 @@ class Client:
         params = {"regionId": region_id}
         return await self._make_request("GET", "/api/v3/alerts/regionHistory", params=params)
 
-    async def get_regions(self) -> types.RegionsView:
+    async def get_regions(self) -> types.RegionsViewModel:
         """
         Retrieves information about regions from the UkraineAlert API.
 
         Returns:
-            types.RegionsView: An object representing information about regions.
+            types.RegionsViewModel: An object representing information about regions.
         """
         return await self._make_request("GET", "/api/v3/regions")
 
