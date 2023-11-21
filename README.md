@@ -1,7 +1,7 @@
 ### Installing
 
 ``` bash
-pip uninstall -r requirements.txt -y
+pip install -r requirements.txt -y
 ```
 
 ## UA_ALARM
