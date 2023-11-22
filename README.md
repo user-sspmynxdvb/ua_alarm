@@ -1,7 +1,15 @@
 ### Installing
 
+## pip
+
 ``` bash
 pip install -r requirements.txt -y
+```
+
+## poetry
+
+``` bash
+poetry install
 ```
 
 ## UA_ALARM
