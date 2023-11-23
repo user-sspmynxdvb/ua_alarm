@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class AlertType(Enum):
     UNKNOWN = "UNKNOWN"
     AIR = "AIR"

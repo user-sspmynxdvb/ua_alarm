@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class TimeSpan(BaseModel):
     ticks: int
     days: int

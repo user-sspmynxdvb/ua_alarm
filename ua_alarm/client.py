@@ -2,6 +2,7 @@ from typing import List, Optional, Union
 from ua_alarm import types
 from aiohttp import ClientSession
 
+
 class Client:
     """
     A client to interact with the UkraineAlert API, providing methods to access various endpoints.
@@ -23,6 +24,12 @@ class Client:
         unsubscribe_from_webhook(webhook_data: dict) -> None: Unsubscribe from a webhook.
     """
 
+    _ALERTS_ENDPOINT = "/api/v3/alerts"
+    _ALERT_STATUS_ENDPOINT = "/api/v3/alerts/status"
+    _REGION_HISTORY_ENDPOINT = "/api/v3/alerts/regionHistory"
+    _REGIONS_ENDPOINT = "/api/v3/regions"
+    _WEBHOOK_ENDPOINT = "/api/v3/webhook"
+
     def __init__(self, api_token: str):
         """
         Initializes the UkraineAlertApiClient with the provided API token.
@@ -31,11 +38,21 @@ class Client:
             api_token (str): The API token required for authorization.
         """
         self.base_url = "https://api.ukrainealarm.com"
-        self.headers = {
-            "Authorization": api_token
-        }
+        self.headers = {"Authorization": api_token}
 
-    async def _make_request(self, method: str, endpoint: str, params: Optional[dict] = None, data: Optional[dict] = None) -> Union[types.AlertRegionModel, types.AlertModification, types.RegionAlarmsHistory, types.RegionsViewModel, types.WebHook]:
+    async def _make_request(
+            self,
+            method: str,
+            endpoint: str,
+            params: Optional[dict] = None,
+            data: Optional[dict] = None,
+    ) -> Union[
+        types.AlertRegionModel,
+        types.AlertModification,
+        types.RegionAlarmsHistory,
+        types.RegionsViewModel,
+        types.WebHook,
+    ]:
         """
         Makes a request to the UkraineAlert API.
 
@@ -50,41 +67,35 @@ class Client:
         """
         url = f"{self.base_url}{endpoint}"
         async with ClientSession(headers=self.headers) as session:
-            async with session.request(method, url, params=params, json=data) as response:
+            async with session.request(
+                    method, url, params=params, json=data
+            ) as response:
                 response_json = await response.json()
 
                 # Determine and return the appropriate model object based on the endpoint accessed
-                if endpoint == "/api/v3/alerts/status":
+                if endpoint == self._ALERT_STATUS_ENDPOINT:
                     return types.AlertModification(**response_json)
-                elif endpoint == "/api/v3/alerts/regionHistory":
+                elif endpoint == self._REGION_HISTORY_ENDPOINT:
                     return [types.RegionAlarmsHistory(**item) for item in response_json]
-                elif endpoint == "/api/v3/regions":
+                elif endpoint == self._REGIONS_ENDPOINT:
                     return types.RegionsViewModel(**response_json)
-                elif endpoint == "/api/v3/webhook":
+                elif endpoint == self._WEBHOOK_ENDPOINT:
                     return types.WebHook(**response_json)
-                elif "/api/v3/alerts" in endpoint:
+                elif self._ALERTS_ENDPOINT in endpoint:
                     return [types.AlertRegionModel(**item) for item in response_json]
 
-    async def get_alerts(self) -> List[types.AlertRegionModel]:
+    async def get_alerts(self, region_id: str | int = None) -> List[types.AlertRegionModel]:
         """
-        Retrieves a list of alerts from the UkraineAlert API.
+        Retrieves alerts from the UkraineAlert API.
+
+        Args:
+            region_id (str or int, optional): The ID of the region for which alerts are requested. Defaults to None.
 
         Returns:
             List[types.AlertRegionModel]: A list of types.AlertRegionModel objects.
         """
-        return await self._make_request("GET", "/api/v3/alerts")
-
-    async def get_region_alerts(self, region_id: str|int) -> List[types.AlertRegionModel]:
-        """
-        Retrieves alerts for a specific region from the UkraineAlert API.
-
-        Args:
-            region_id (str or int): The ID of the region for which alerts are requested.
-
-        Returns:
-            List[types.AlertRegionModel]: A list of types.AlertRegionModel objects for the specified region.
-        """
-        return await self._make_request("GET", f"/api/v3/alerts/{region_id}")
+        endpoint = self._ALERTS_ENDPOINT if not region_id else f"{self._ALERTS_ENDPOINT}/{region_id}"
+        return await self._make_request("GET", endpoint)
 
     async def get_alert_status(self) -> types.AlertModification:
         """
@@ -93,9 +104,11 @@ class Client:
         Returns:
             types.AlertModification: An object representing the status of alerts.
         """
-        return await self._make_request("GET", "/api/v3/alerts/status")
+        return await self._make_request("GET", self._ALERT_STATUS_ENDPOINT)
 
-    async def get_region_history(self, region_id: str|int) -> types.RegionAlarmsHistory:
+    async def get_region_history(
+            self, region_id: str | int
+    ) -> types.RegionAlarmsHistory:
         """
         Retrieves the history of alerts for a specific region from the UkraineAlert API.
 
@@ -106,7 +119,9 @@ class Client:
             types.RegionAlarmsHistory: An object representing the history of alerts for the specified region.
         """
         params = {"regionId": region_id}
-        return await self._make_request("GET", "/api/v3/alerts/regionHistory", params=params)
+        return await self._make_request(
+            "GET", self._REGION_HISTORY_ENDPOINT, params=params
+        )
 
     async def get_regions(self) -> types.RegionsViewModel:
         """
@@ -115,7 +130,7 @@ class Client:
         Returns:
             types.RegionsViewModel: An object representing information about regions.
         """
-        return await self._make_request("GET", "/api/v3/regions")
+        return await self._make_request("GET", self._REGIONS_ENDPOINT)
 
     async def subscribe_to_webhook(self, webhook_data: dict) -> types.WebHook:
         """
@@ -127,7 +142,9 @@ class Client:
         Returns:
             types.WebHook: An object representing the subscribed webhook.
         """
-        return await self._make_request("POST", "/api/v3/webhook", data=webhook_data)
+        return await self._make_request(
+            "POST", self._WEBHOOK_ENDPOINT, data=webhook_data
+        )
 
     async def update_webhook(self, webhook_data: dict) -> None:
         """
@@ -136,7 +153,7 @@ class Client:
         Args:
             webhook_data (dict): Data required for updating the webhook.
         """
-        await self._make_request("PATCH", "/api/v3/webhook", data=webhook_data)
+        await self._make_request("PATCH", self._WEBHOOK_ENDPOINT, data=webhook_data)
 
     async def unsubscribe_from_webhook(self, webhook_data: dict) -> None:
         """
@@ -145,4 +162,4 @@ class Client:
         Args:
             webhook_data (dict): Data required for unsubscribing from the webhook.
         """
-        await self._make_request("DELETE", "/api/v3/webhook", data=webhook_data)
+        await self._make_request("DELETE", self._WEBHOOK_ENDPOINT, data=webhook_data)

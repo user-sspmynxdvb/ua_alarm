@@ -4,6 +4,7 @@ from typing import List, Optional
 from .alert import Alert
 from ..enums import v2RegionType
 
+
 class AlertRegionModel(BaseModel):
     regionId: Optional[str]
     regionType: v2RegionType

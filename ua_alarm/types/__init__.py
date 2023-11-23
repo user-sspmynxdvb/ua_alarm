@@ -9,13 +9,13 @@ from .time_span import TimeSpan
 from .web_hook import WebHook
 
 __all__ = [
-    'Alert', 
-    'AlertModification', 
-    'AlertRegionModel', 
-    'RegionAlarmModel', 
-    'RegionAlarmsHistory', 
-    'RegionViewModel', 
-    'RegionsViewModel', 
-    'TimeSpan', 
-    'WebHook',
+    "Alert",
+    "AlertModification",
+    "AlertRegionModel",
+    "RegionAlarmModel",
+    "RegionAlarmsHistory",
+    "RegionViewModel",
+    "RegionsViewModel",
+    "TimeSpan",
+    "WebHook",
 ]
