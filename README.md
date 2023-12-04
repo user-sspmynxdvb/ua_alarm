@@ -23,13 +23,13 @@ air raid alarms.**
 ### pip
 
 ``` bash
-pip install -r requirements.txt
+pip install ua_alarm
 ```
 
 ### poetry
 
 ``` bash
-poetry install
+poetry add ua_alarm
 ```
 
 ### Example
