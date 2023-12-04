@@ -1,9 +1,29 @@
 # Changelog
 
-## [1.3.3] (29-11-2023)
+## [v1.3.4]() - 04.12.2023
 
-* **Code format**
-* **Updated README.md**
-###  **[client.py](https://github.com/user-sspmynxdvb/ua_alarm/blob/a75017703220ede06cfc6809f1b9c15c273abeea/ua_alarm/client.py)**: 
-* removed function get_region_alerts, removed function get_region_alerts, functionality has been moved to get_alerts.
-* Links have been moved to constants
+### Improved
+- **functions: __init__, _make_request**
+- **files: client.py**
+
+### Added
+- **libraries: from asyncio import run**
+
+### More info
+- **__init__: added run(self._make_request("GET", self._ALERTS_ENDPOINT))**
+- **_make_request: `if response.status != 200: raise Exception("Invalid API token")`**
+
+
+## [v1.3.3](https://github.com/user-sspmynxdvb/ua_alarm/tree/bb6e4f60d6362467e61cb3dd6b24b7d3beed668c) - 29.11.2023
+
+### Improved
+- **code: Code format**
+
+### Added
+- **variables: Links have been moved to constants**
+
+### Removed
+- **functions: get_region_alerts**
+
+### More info
+- **removed function get_region_alerts, functionality has been moved to get_alerts**

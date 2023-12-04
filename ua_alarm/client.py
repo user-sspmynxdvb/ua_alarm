@@ -1,8 +1,12 @@
+from asyncio import run
 from typing import List, Optional, Union
-from ua_alarm import types
+
 from aiohttp import ClientSession
 
+from ua_alarm import types
 
+
+# from icecream import ic
 class Client:
     """
     A client to interact with the UkraineAlert API, providing methods to access various endpoints.
@@ -39,6 +43,8 @@ class Client:
         """
         self.base_url = "https://api.ukrainealarm.com"
         self.headers = {"Authorization": api_token}
+        # test request
+        run(self._make_request("GET", self._ALERTS_ENDPOINT))
 
     async def _make_request(
             self,
@@ -70,6 +76,9 @@ class Client:
             async with session.request(
                     method, url, params=params, json=data
             ) as response:
+                if response.status != 200:
+                    raise Exception("Invalid API token")
+
                 response_json = await response.json()
 
                 # Determine and return the appropriate model object based on the endpoint accessed
