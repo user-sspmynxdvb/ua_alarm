@@ -1,6 +1,28 @@
 # Changelog
 
-## [v1.3.4]() - 04.12.2023
+## [v1.3.5]() - 27.12.2023
+
+### Improved
+- **files: poetry.lock, client.py**
+- **functions: _make_request**
+
+### Added
+- **libraries: from asyncio import sleep as async_sleep, from aiohttp.client_exceptions import ClientConnectorError**
+- **functions: alert_loop**
+
+### More info
+- **_make_request: `match response.status:
+                    case 200:
+                        pass
+                    case 401:
+                        raise PermissionError("Invalid API token")
+                    case 503:
+                        raise Exception("API is currently unavailable")
+                    case unknown_status:
+                        raise Exception(f"Request failed with status code {unknown_status}\n{await response.text()}")`**
+
+
+## [v1.3.4](https://github.com/user-sspmynxdvb/ua_alarm/tree/9c31e9a778af3e239ca153a40c42eeec91435bc1) - 04.12.2023
 
 ### Improved
 - **functions: __init__, _make_request**

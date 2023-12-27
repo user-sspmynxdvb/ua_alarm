@@ -2,7 +2,8 @@ from asyncio import run
 from typing import List, Optional, Union
 
 from aiohttp import ClientSession
-
+from aiohttp.client_exceptions import ClientConnectorError
+from asyncio import sleep as async_sleep
 from ua_alarm import types
 
 
@@ -76,8 +77,15 @@ class Client:
             async with session.request(
                     method, url, params=params, json=data
             ) as response:
-                if response.status != 200:
-                    raise Exception("Invalid API token")
+                match response.status:
+                    case 200:
+                        pass
+                    case 401:
+                        raise PermissionError("Invalid API token")
+                    case 503:
+                        raise Exception("API is currently unavailable")
+                    case unknown_status:
+                        raise Exception(f"Request failed with status code {unknown_status}\n{await response.text()}")
 
                 response_json = await response.json()
 
@@ -172,3 +180,64 @@ class Client:
             webhook_data (dict): Data required for unsubscribing from the webhook.
         """
         await self._make_request("DELETE", self._WEBHOOK_ENDPOINT, data=webhook_data)
+
+    async def alert_loop(self, region_id: str | int) -> None:
+        """
+        A loop that continuously monitors for changes in the alert state for a specific region.
+
+        The loop fetches region alerts using the UkraineAlert API and checks for changes in the last update time.
+        If a change is detected, it prints information about the active alert, if any.
+
+        Note: The loop sleeps for 30 seconds between iterations.
+
+        Raises:
+            ClientConnectorError: If there's a connection issue during API request.
+
+        Global Variables:
+            alert_changed_time (str): A global variable to store the timestamp of the last alert change.
+
+        API Token:
+            The API token is hardcoded for demonstration purposes.
+
+        API Client:
+            An instance of UkraineAlertApiClient is used to interact with the UkraineAlert API.
+        """
+        # Initialize the alert_changed_time variable
+        alert_changed_time = ""
+
+        # Continuously monitor for changes in the alert state
+        while True:
+            try:
+                # Fetch region alerts (region_id=28)
+                data = await self.get_alerts(region_id)
+                data = data[0]
+
+                # Extract the last update time from the fetched data
+                changed_str = data.lastUpdate
+
+                # Check if there's a change in the alert state
+                if not changed_str == alert_changed_time:
+                    alert_old_changed_time = alert_changed_time
+                    alert_changed_time = changed_str
+                    changed_str = f"\033[34m\033[1m({data.lastUpdate.strftime('%d.%m.%Y %H:%M:%S')})"
+
+                    # Skip if duration less than or equal to 10 seconds
+                    if alert_old_changed_time:
+                        if int((alert_changed_time - alert_old_changed_time).total_seconds()) <= 10:
+                            continue
+
+                        # Construct a text message based on the active alert status
+                        if data.activeAlerts:
+                            text = f"{changed_str} \033[38;5;202m[{data.activeAlerts[0].type}] \033[31m\033[1mОголошено тривогу"
+                        else:
+                            text = f"{changed_str} \033[32m\033[1mВідбій тривоги"
+
+                        # Print the alert information
+                        print(text)
+
+            # Continue to the next iteration if there's a connection issue
+            except ClientConnectorError:
+                pass
+
+            # Sleep for 30 seconds before checking for changes again
+            await async_sleep(30)
