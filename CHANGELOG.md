@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.3.5]() - 27.12.2023
+## [v1.3.5](https://github.com/user-sspmynxdvb/ua_alarm/tree/f10b10ceca60f150af38cafbaee7787d279553d3) - 27.12.2023
 
 ### Improved
 - **files: poetry.lock, client.py**
