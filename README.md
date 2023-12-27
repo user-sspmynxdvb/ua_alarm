@@ -37,8 +37,7 @@ poetry add ua_alarm
 ```python
 from ua_alarm import Client as UkraineAlertApiClient
 import os
-from aiohttp.client_exceptions import ClientConnectorError
-from asyncio import sleep, run
+from asyncio import run
 
 # Clear the console screen
 os.system('cls' if os.name == 'nt' else 'clear')
