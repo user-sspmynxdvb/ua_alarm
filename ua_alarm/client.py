@@ -1,10 +1,12 @@
-from asyncio import run
+from asyncio import sleep, run
+from datetime import datetime
 from typing import List, Optional, Union
 
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientConnectorError
-from asyncio import sleep as async_sleep
+
 from ua_alarm import types
+from ua_alarm.enums.alert_type import AlertType
 
 
 # from icecream import ic
@@ -181,6 +183,26 @@ class Client:
         """
         await self._make_request("DELETE", self._WEBHOOK_ENDPOINT, data=webhook_data)
 
+    @staticmethod
+    def refactor_alert_type(type: AlertType) -> str:
+        """
+        Converts an AlertType enum into a corresponding localized string representation.
+
+        Args:
+            type (AlertType): The AlertType enum value.
+
+        Returns:
+            str: A string representing the localized alert message corresponding to the AlertType.
+                 Defaults to 'Повітряна тривога' if the AlertType is not found in the mapping.
+        """
+        ALERT_TYPE = {
+            AlertType.ARTILLERY: "Загроза артобстрілу",
+            AlertType.URBAN_FIGHTS: "Загроза вуличних боїв",
+            AlertType.CHEMICAL: "Хімічна загроза",
+            AlertType.NUCLEAR: "Радіаційна загроза ",
+        }
+        return ALERT_TYPE.get(type, "Повітряна тривога")
+
     async def alert_loop(self, region_id: str | int) -> None:
         """
         A loop that continuously monitors for changes in the alert state for a specific region.
@@ -204,6 +226,7 @@ class Client:
         """
         # Initialize the alert_changed_time variable
         alert_changed_time = ""
+        utc = datetime.now().tzinfo
 
         # Continuously monitor for changes in the alert state
         while True:
@@ -219,7 +242,7 @@ class Client:
                 if not changed_str == alert_changed_time:
                     alert_old_changed_time = alert_changed_time
                     alert_changed_time = changed_str
-                    changed_str = f"\033[34m\033[1m({data.lastUpdate.strftime('%d.%m.%Y %H:%M:%S')})"
+                    changed_str = f"({changed_str.astimezone(utc).strftime('%d.%m.%Y %H:%M:%S')})"
 
                     # Skip if duration less than or equal to 10 seconds
                     if alert_old_changed_time:
@@ -228,16 +251,17 @@ class Client:
 
                         # Construct a text message based on the active alert status
                         if data.activeAlerts:
-                            text = f"{changed_str} \033[38;5;202m[{data.activeAlerts[0].type}] \033[31m\033[1mОголошено тривогу"
+                            alert_type = self.refactor_alert_type(data.activeAlerts[0].type)
+                            text = f"{changed_str} \033[38;5;202m[{alert_type}] \033[31m\033[1mОголошено тривогу"
                         else:
                             text = f"{changed_str} \033[32m\033[1mВідбій тривоги"
 
                         # Print the alert information
-                        print(text)
+                        print(f"\033[34m\033[1m{text}\033[37m\033[1m")
 
             # Continue to the next iteration if there's a connection issue
             except ClientConnectorError:
                 pass
 
             # Sleep for 30 seconds before checking for changes again
-            await async_sleep(30)
+            await sleep(30)

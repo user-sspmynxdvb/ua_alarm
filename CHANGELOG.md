@@ -1,6 +1,21 @@
 # Changelog
 
-## [v1.3.5](https://github.com/user-sspmynxdvb/ua_alarm/tree/3f43b89060cc380c7b8993297154cd3b15688a00) - 27.12.2023
+## [v1.3.6]() - 27.12.2023
+
+### Improved
+- **files: client.py**
+- **functions: alert_loop**
+
+### Added
+- **libraries: from datetime import datetime**
+- **functions: refactor_alert_type**
+
+### More info
+- **alert_loop: `utc = datetime.now().tzinfo
+changed_str.astimezone(utc)`**
+
+
+## [v1.3.5](https://github.com/user-sspmynxdvb/ua_alarm/tree/e2f9b29f3e26815305c0af7b782775f06bb1f52a) - 27.12.2023
 
 ### Improved
 - **files: poetry.lock, client.py**
