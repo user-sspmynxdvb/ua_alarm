@@ -245,13 +245,13 @@ class Client:
                     alert_changed_time = changed_str
                     changed_str = f"({changed_str.astimezone(tzinfo).strftime('%d.%m.%Y %H:%M:%S')})"
 
+                    # Skip if duration less than or equal to 10 seconds
                     if alert_old_changed_time:
+                        if int((alert_changed_time - alert_old_changed_time).total_seconds()) <= 10:
+                            continue
+
                         # Construct a text message based on the active alert status
                         if data.activeAlerts:
-                            # Skip if duration less than or equal to 10 seconds
-                            if int((alert_changed_time - alert_old_changed_time).total_seconds()) <= 10:
-                                continue
-
                             alert_type = self.refactor_alert_type(data.activeAlerts[0].type)
                             text = f"{changed_str} \033[38;5;202m[{alert_type}] \033[31m\033[1mОголошено тривогу"
                         else:

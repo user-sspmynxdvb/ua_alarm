@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.3.7]() - 28.12.2023
+## [v1.3.7](https://github.com/user-sspmynxdvb/ua_alarm/tree/f72518589bde2c6be55acec13c6c0535e6c836c0) - 28.12.2023
 
 ### Improved
 - **files: client.py**
@@ -19,7 +19,7 @@
                     case endpoint if self._ALERTS_ENDPOINT in endpoint:
                         return [types.AlertRegionModel(**item) for item in response_json]`**
 
-- **alert_loop: variables: utc renamed to tzinfo; `if int((alert_changed_time - alert_old_changed_time).total_seconds()) <= 10: continue` moved after `if data.activeAlerts`**
+- **alert_loop: variables: utc renamed to tzinfo**
 
 ## [v1.3.6](https://github.com/user-sspmynxdvb/ua_alarm/tree/dafa5ab83878e4bc451d044c8c5385a756d85aaa) - 27.12.2023
 
