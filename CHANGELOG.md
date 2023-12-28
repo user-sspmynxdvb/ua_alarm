@@ -1,5 +1,26 @@
 # Changelog
 
+## [v1.3.7]() - 28.12.2023
+
+### Improved
+- **files: client.py**
+- **functions: _make_request, alert_loop**
+
+### More info
+- **_make_request: `match endpoint:
+                    case self._ALERT_STATUS_ENDPOINT:
+                        return types.AlertModification(**response_json)
+                    case self._REGION_HISTORY_ENDPOINT:
+                        return types.RegionAlarmsHistory(**response_json)
+                    case self._REGIONS_ENDPOINT:
+                        return types.RegionsViewModel(**response_json)
+                    case self._WEBHOOK_ENDPOINT:
+                        return types.WebHook(**response_json)
+                    case endpoint if self._ALERTS_ENDPOINT in endpoint:
+                        return [types.AlertRegionModel(**item) for item in response_json]`**
+
+- **alert_loop: variables: utc renamed to tzinfo; `if int((alert_changed_time - alert_old_changed_time).total_seconds()) <= 10: continue` moved after `if data.activeAlerts`**
+
 ## [v1.3.6](https://github.com/user-sspmynxdvb/ua_alarm/tree/dafa5ab83878e4bc451d044c8c5385a756d85aaa) - 27.12.2023
 
 ### Improved

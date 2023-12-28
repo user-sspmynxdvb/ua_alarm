@@ -92,16 +92,17 @@ class Client:
                 response_json = await response.json()
 
                 # Determine and return the appropriate model object based on the endpoint accessed
-                if endpoint == self._ALERT_STATUS_ENDPOINT:
-                    return types.AlertModification(**response_json)
-                elif endpoint == self._REGION_HISTORY_ENDPOINT:
-                    return [types.RegionAlarmsHistory(**item) for item in response_json]
-                elif endpoint == self._REGIONS_ENDPOINT:
-                    return types.RegionsViewModel(**response_json)
-                elif endpoint == self._WEBHOOK_ENDPOINT:
-                    return types.WebHook(**response_json)
-                elif self._ALERTS_ENDPOINT in endpoint:
-                    return [types.AlertRegionModel(**item) for item in response_json]
+                match endpoint:
+                    case self._ALERT_STATUS_ENDPOINT:
+                        return types.AlertModification(**response_json)
+                    case self._REGION_HISTORY_ENDPOINT:
+                        return types.RegionAlarmsHistory(**response_json)
+                    case self._REGIONS_ENDPOINT:
+                        return types.RegionsViewModel(**response_json)
+                    case self._WEBHOOK_ENDPOINT:
+                        return types.WebHook(**response_json)
+                    case endpoint if self._ALERTS_ENDPOINT in endpoint:
+                        return [types.AlertRegionModel(**item) for item in response_json]
 
     async def get_alerts(self, region_id: str | int = None) -> List[types.AlertRegionModel]:
         """
@@ -226,7 +227,7 @@ class Client:
         """
         # Initialize the alert_changed_time variable
         alert_changed_time = ""
-        utc = datetime.now().tzinfo
+        tzinfo = datetime.now().tzinfo
 
         # Continuously monitor for changes in the alert state
         while True:
@@ -242,15 +243,15 @@ class Client:
                 if not changed_str == alert_changed_time:
                     alert_old_changed_time = alert_changed_time
                     alert_changed_time = changed_str
-                    changed_str = f"({changed_str.astimezone(utc).strftime('%d.%m.%Y %H:%M:%S')})"
+                    changed_str = f"({changed_str.astimezone(tzinfo).strftime('%d.%m.%Y %H:%M:%S')})"
 
-                    # Skip if duration less than or equal to 10 seconds
                     if alert_old_changed_time:
-                        if int((alert_changed_time - alert_old_changed_time).total_seconds()) <= 10:
-                            continue
-
                         # Construct a text message based on the active alert status
                         if data.activeAlerts:
+                            # Skip if duration less than or equal to 10 seconds
+                            if int((alert_changed_time - alert_old_changed_time).total_seconds()) <= 10:
+                                continue
+
                             alert_type = self.refactor_alert_type(data.activeAlerts[0].type)
                             text = f"{changed_str} \033[38;5;202m[{alert_type}] \033[31m\033[1mОголошено тривогу"
                         else:

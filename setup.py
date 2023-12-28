@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
 
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding='utf-8') as fh:
     long_description = fh.read()
 
 setup(
     name="ua_alarm",
     author="user-sspmynxdvb",
-    version="1.3.6",
+    version="1.3.7",
     description="Implements api.ua_alarm.com API that returns info about Ukraine air raid alarms.",
     license="GNUv3",
     url="https://github.com/user-sspmynxdvb/ua_alarm",
@@ -15,5 +15,8 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
     ],
+    long_description=long_description,
+    long_description_content_type='text/markdown',
 )
