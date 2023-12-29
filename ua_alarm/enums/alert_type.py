@@ -9,3 +9,18 @@ class AlertType(Enum):
     CHEMICAL = "CHEMICAL"
     NUCLEAR = "NUCLEAR"
     INFO = "INFO"
+
+
+ALERT_TYPE_UA = {
+    AlertType.ARTILLERY: "Загроза артобстрілу",
+    AlertType.URBAN_FIGHTS: "Загроза вуличних боїв",
+    AlertType.CHEMICAL: "Хімічна загроза",
+    AlertType.NUCLEAR: "Радіаційна загроза",
+}
+
+ALERT_TYPE_EN = {
+    AlertType.ARTILLERY: "The threat of artillery fire",
+    AlertType.URBAN_FIGHTS: "The threat of street fighting",
+    AlertType.CHEMICAL: "Chemical threat",
+    AlertType.NUCLEAR: "Nuclear threat",
+}

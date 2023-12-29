@@ -1,5 +1,23 @@
 # Changelog
 
+## [v1.3.8]() - 29.12.2023
+
+### Improved
+- **files: client.py, alert_type.py**
+- **functions: __make_request, refactor_alert_type, alert_loop**
+
+### Renamed
+- **functions: _make_request 👉 __make_request**
+
+### More info
+- **alert_type.py: added variables: ALERT_TYPE_UA, ALERT_TYPE_EN**
+- **__make_request: `case 404: raise Exception("The requested resource could not be found")`**
+- **refactor_alert_type: added ua_lang, ua or english language; `if ua_lang: return ALERT_TYPE_UA.get(type, "Повітряна тривога") else: return ALERT_TYPE_EN.get(type, "Air alarm")`**
+- **alert_loop: added ua_lang, ua or english language; `alert_message = "Оголошено тривогу" if ua_lang else "Air raid siren"`, `clear_message = "Відбій тривоги" if ua_lang else "Air siren all clear"`**
+- **text**
+
+
+  
 ## [v1.3.7](https://github.com/user-sspmynxdvb/ua_alarm/tree/f72518589bde2c6be55acec13c6c0535e6c836c0) - 28.12.2023
 
 ### Improved

@@ -6,7 +6,7 @@ from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientConnectorError
 
 from ua_alarm import types
-from ua_alarm.enums.alert_type import AlertType
+from ua_alarm.enums.alert_type import AlertType, ALERT_TYPE_UA, ALERT_TYPE_EN
 
 
 # from icecream import ic
@@ -20,7 +20,7 @@ class Client:
 
     Methods:
         __init__(api_token: str): Initialize the UkraineAlertApiClient with an API token.
-        _make_request(method: str, endpoint: str, params: Optional[dict] = None, data: Optional[dict] = None) -> Union[types.AlertRegionModel, types.AlertModification, types.RegionAlarmsHistory, types.RegionsViewModel, types.WebHook]: Make a request to the UkraineAlert API.
+        __make_request(method: str, endpoint: str, params: Optional[dict] = None, data: Optional[dict] = None) -> Union[types.AlertRegionModel, types.AlertModification, types.RegionAlarmsHistory, types.RegionsViewModel, types.WebHook]: Make a request to the UkraineAlert API.
         get_alerts() -> List[types.AlertRegionModel]: Get a list of alerts.
         get_region_alerts(region_id: str|int) -> List[types.AlertRegionModel]: Get alerts for a specific region.
         get_alert_status() -> types.AlertModification: Get the status of alerts.
@@ -47,9 +47,9 @@ class Client:
         self.base_url = "https://api.ukrainealarm.com"
         self.headers = {"Authorization": api_token}
         # test request
-        run(self._make_request("GET", self._ALERTS_ENDPOINT))
+        run(self.__make_request("GET", self._ALERTS_ENDPOINT))
 
-    async def _make_request(
+    async def __make_request(
             self,
             method: str,
             endpoint: str,
@@ -84,6 +84,8 @@ class Client:
                         pass
                     case 401:
                         raise PermissionError("Invalid API token")
+                    case 404:
+                        raise Exception("The requested resource could not be found")
                     case 503:
                         raise Exception("API is currently unavailable")
                     case unknown_status:
@@ -115,7 +117,7 @@ class Client:
             List[types.AlertRegionModel]: A list of types.AlertRegionModel objects.
         """
         endpoint = self._ALERTS_ENDPOINT if not region_id else f"{self._ALERTS_ENDPOINT}/{region_id}"
-        return await self._make_request("GET", endpoint)
+        return await self.__make_request("GET", endpoint)
 
     async def get_alert_status(self) -> types.AlertModification:
         """
@@ -124,7 +126,7 @@ class Client:
         Returns:
             types.AlertModification: An object representing the status of alerts.
         """
-        return await self._make_request("GET", self._ALERT_STATUS_ENDPOINT)
+        return await self.__make_request("GET", self._ALERT_STATUS_ENDPOINT)
 
     async def get_region_history(
             self, region_id: str | int
@@ -139,7 +141,7 @@ class Client:
             types.RegionAlarmsHistory: An object representing the history of alerts for the specified region.
         """
         params = {"regionId": region_id}
-        return await self._make_request(
+        return await self.__make_request(
             "GET", self._REGION_HISTORY_ENDPOINT, params=params
         )
 
@@ -150,7 +152,7 @@ class Client:
         Returns:
             types.RegionsViewModel: An object representing information about regions.
         """
-        return await self._make_request("GET", self._REGIONS_ENDPOINT)
+        return await self.__make_request("GET", self._REGIONS_ENDPOINT)
 
     async def subscribe_to_webhook(self, webhook_data: dict) -> types.WebHook:
         """
@@ -162,7 +164,7 @@ class Client:
         Returns:
             types.WebHook: An object representing the subscribed webhook.
         """
-        return await self._make_request(
+        return await self.__make_request(
             "POST", self._WEBHOOK_ENDPOINT, data=webhook_data
         )
 
@@ -173,7 +175,7 @@ class Client:
         Args:
             webhook_data (dict): Data required for updating the webhook.
         """
-        await self._make_request("PATCH", self._WEBHOOK_ENDPOINT, data=webhook_data)
+        await self.__make_request("PATCH", self._WEBHOOK_ENDPOINT, data=webhook_data)
 
     async def unsubscribe_from_webhook(self, webhook_data: dict) -> None:
         """
@@ -182,48 +184,44 @@ class Client:
         Args:
             webhook_data (dict): Data required for unsubscribing from the webhook.
         """
-        await self._make_request("DELETE", self._WEBHOOK_ENDPOINT, data=webhook_data)
+        await self.__make_request("DELETE", self._WEBHOOK_ENDPOINT, data=webhook_data)
 
     @staticmethod
-    def refactor_alert_type(type: AlertType) -> str:
+    def refactor_alert_type(type: AlertType, ua_lang: bool = True) -> str:
         """
         Converts an AlertType enum into a corresponding localized string representation.
 
         Args:
             type (AlertType): The AlertType enum value.
+            ua_lang (bool, optional): Determines the language of the returned string.
+                                      True for Ukrainian (default), False for English.
 
         Returns:
             str: A string representing the localized alert message corresponding to the AlertType.
-                 Defaults to 'Повітряна тривога' if the AlertType is not found in the mapping.
+                 Defaults to 'Air alarm' in English or 'Повітряна тривога' in Ukrainian if the AlertType is not found in the mapping.
         """
-        ALERT_TYPE = {
-            AlertType.ARTILLERY: "Загроза артобстрілу",
-            AlertType.URBAN_FIGHTS: "Загроза вуличних боїв",
-            AlertType.CHEMICAL: "Хімічна загроза",
-            AlertType.NUCLEAR: "Радіаційна загроза ",
-        }
-        return ALERT_TYPE.get(type, "Повітряна тривога")
+        if ua_lang:
+            return ALERT_TYPE_UA.get(type, "Повітряна тривога")
+        else:
+            return ALERT_TYPE_EN.get(type, "Air alarm")
 
-    async def alert_loop(self, region_id: str | int) -> None:
+    async def alert_loop(self, region_id: str | int, ua_lang: bool = True) -> None:
         """
-        A loop that continuously monitors for changes in the alert state for a specific region.
+        Monitors and displays real-time changes in alert states for a specified region.
 
-        The loop fetches region alerts using the UkraineAlert API and checks for changes in the last update time.
-        If a change is detected, it prints information about the active alert, if any.
+        Args:
+            region_id (str | int): Identifier for the region to monitor.
+            ua_lang (bool, optional): Indicates the language preference for alerts. Defaults to True (Ukrainian).
 
-        Note: The loop sleeps for 30 seconds between iterations.
+        Returns:
+            None
 
-        Raises:
-            ClientConnectorError: If there's a connection issue during API request.
-
-        Global Variables:
-            alert_changed_time (str): A global variable to store the timestamp of the last alert change.
-
-        API Token:
-            The API token is hardcoded for demonstration purposes.
-
-        API Client:
-            An instance of UkraineAlertApiClient is used to interact with the UkraineAlert API.
+        Description:
+            This asynchronous function continuously monitors the alert state for a specified region.
+            It employs an infinite loop to fetch the latest alert data and detect alterations in the alert state.
+            Upon detecting a change, it generates and outputs a message reflecting the updated alert status.
+            The function operates in a real-time manner, sleeping for 30 seconds between iterations to minimize resource consumption.
+            In the event of connection issues, it gracefully handles exceptions and continues monitoring after a brief pause.
         """
         # Initialize the alert_changed_time variable
         alert_changed_time = ""
@@ -252,10 +250,20 @@ class Client:
 
                         # Construct a text message based on the active alert status
                         if data.activeAlerts:
-                            alert_type = self.refactor_alert_type(data.activeAlerts[0].type)
-                            text = f"{changed_str} \033[38;5;202m[{alert_type}] \033[31m\033[1mОголошено тривогу"
+                            # Determine the type of alert based on the active alert's type and language preference
+                            alert_type = self.refactor_alert_type(data.activeAlerts[0].type, ua_lang)
+
+                            # Define alert message based on language preference (Ukrainian or English)
+                            alert_message = "Оголошено тривогу" if ua_lang else "Air raid siren"
+
+                            # Construct the text message for an alert scenario
+                            text = f"{changed_str} \033[38;5;202m[{alert_type}] \033[31m\033[1m{alert_message}"
                         else:
-                            text = f"{changed_str} \033[32m\033[1mВідбій тривоги"
+                            # Define all-clear message based on language preference (Ukrainian or English)
+                            clear_message = "Відбій тривоги" if ua_lang else "Air siren all clear"
+
+                            # Construct the text message for an all-clear scenario
+                            text = f"{changed_str} \033[32m\033[1m{clear_message}"
 
                         # Print the alert information
                         print(f"\033[34m\033[1m{text}\033[37m\033[1m")
