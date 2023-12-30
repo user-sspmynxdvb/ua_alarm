@@ -20,9 +20,9 @@ if __name__ == '__main__':
         # history = run(client.get_region_history(12))
         # history = history[0].alarms[0].alertType
         # ic(client.refactor_alert_type(history))
-        # ic(run(client.get_regions()))
+        print(run(client.get_regions()))
         # ic(run(client.get_alerts(12)))
-        run(client.alert_loop(12, True))
+        # run(client.alert_loop(12, True))
 
     except KeyboardInterrupt:
         exit()
