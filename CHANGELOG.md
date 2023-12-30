@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.3.8]() - 29.12.2023
+## [v1.3.8](https://github.com/user-sspmynxdvb/ua_alarm/tree/7c4e03e055566b0af88a69de2f251750121727d4) - 29.12.2023
 
 ### Improved
 - **files: client.py, alert_type.py**
