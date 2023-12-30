@@ -11,7 +11,7 @@ from ua_alarm import Client as UkraineAlertApiClient
 os.system('cls' if os.name == 'nt' else 'clear')
 
 load_dotenv()
-client = UkraineAlertApiClient(os.getenv("UA_ALARM_API_KEY"))
+client = UkraineAlertApiClient(os.environ.get("UA_ALARM_API_KEY"))
 
 # Run the main function
 if __name__ == '__main__':
