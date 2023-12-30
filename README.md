@@ -1,5 +1,5 @@
 # UA_ALARM 🚨
-> Elegant, modern and asynchronous UkraineAlarm API framework in Python
+> **Elegant, modern and asynchronous UkraineAlarm API framework in Python**
 
 ## About
 
