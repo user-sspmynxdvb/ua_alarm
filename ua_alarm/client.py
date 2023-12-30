@@ -87,7 +87,7 @@ class Client:
                     case 200:
                         pass
                     case 401:
-                        raise PermissionError("Invalid API token")
+                        raise PermissionError(f"Invalid API token, {params}")
                     case 404:
                         raise Exception("The requested resource could not be found")
                     case 503:
