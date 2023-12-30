@@ -46,6 +46,10 @@ class Client:
         """
         self.base_url = "https://api.ukrainealarm.com"
         self.headers = {"Authorization": api_token}
+
+        if not isinstance(api_token, str):
+            raise ValueError(f"Invalid API token: {api_token}")
+
         # test request
         run(self.__make_request("GET", self._ALERTS_ENDPOINT))
 
