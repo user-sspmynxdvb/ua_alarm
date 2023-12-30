@@ -25,7 +25,7 @@ air raid alarms.**
 >
 >![image](https://github.com/user-sspmynxdvb/ua_alarm/assets/132933165/48c8cc1a-17f3-481f-b5e3-f0e97b833145)
 
-> About text was copied from [github.com/PaulAnnekov/ukrainealarm](https://github.com/PaulAnnekov/ukrainealarm)
+> **About text was copied from [github.com/PaulAnnekov/ukrainealarm](https://github.com/PaulAnnekov/ukrainealarm)**
 
 ## Installing
 
