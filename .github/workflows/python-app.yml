@@ -16,7 +16,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      UA_ALARM_API_KEY: ${{ secrets.UA_ALARM_API_KEY }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.10
