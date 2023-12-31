@@ -48,7 +48,7 @@ class Client:
         self.headers = {"Authorization": api_token}
 
         if not isinstance(api_token, str):
-            raise ValueError(f"Invalid API token: {api_token}")
+            raise ValueError(f"Invalid API token: {api_token=}")
 
         # test request
         run(self.__make_request("GET", self._ALERTS_ENDPOINT))
@@ -87,7 +87,7 @@ class Client:
                     case 200:
                         pass
                     case 401:
-                        raise PermissionError(f"Invalid API token, {params}")
+                        raise PermissionError("Invalid API token")
                     case 404:
                         raise Exception("The requested resource could not be found")
                     case 503:

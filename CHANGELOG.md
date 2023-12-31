@@ -1,5 +1,23 @@
 # Changelog
 
+## [v1.3.9](https://github.com/user-sspmynxdvb/ua_alarm/tree/80c41cf812ce527638dd9a9cc69569fae7757ea7) - 30.12.2023
+
+### Improved
+- **files: **
+- **functions: __make_request, refactor_alert_type, alert_loop**
+
+### Added
+- **files: python-app.yml, test.py**
+
+### More info
+- **text**
+- **text**
+- **text**
+- **text**
+- **text**
+- **text**
+- **text**
+
 ## [v1.3.8](https://github.com/user-sspmynxdvb/ua_alarm/tree/7c4e03e055566b0af88a69de2f251750121727d4) - 29.12.2023
 
 ### Improved
@@ -14,10 +32,7 @@
 - **__make_request: `case 404: raise Exception("The requested resource could not be found")`**
 - **refactor_alert_type: added ua_lang, ua or english language; `if ua_lang: return ALERT_TYPE_UA.get(type, "Повітряна тривога") else: return ALERT_TYPE_EN.get(type, "Air alarm")`**
 - **alert_loop: added ua_lang, ua or english language; `alert_message = "Оголошено тривогу" if ua_lang else "Air raid siren"`, `clear_message = "Відбій тривоги" if ua_lang else "Air siren all clear"`**
-- **text**
 
-
-  
 ## [v1.3.7](https://github.com/user-sspmynxdvb/ua_alarm/tree/f72518589bde2c6be55acec13c6c0535e6c836c0) - 28.12.2023
 
 ### Improved
