@@ -16,6 +16,7 @@ ALERT_TYPE_UA = {
     AlertType.URBAN_FIGHTS: "Загроза вуличних боїв",
     AlertType.CHEMICAL: "Хімічна загроза",
     AlertType.NUCLEAR: "Радіаційна загроза",
+    AlertType.INFO: "ЗМІ повідомляють про вибухи",
 }
 
 ALERT_TYPE_EN = {
@@ -23,4 +24,5 @@ ALERT_TYPE_EN = {
     AlertType.URBAN_FIGHTS: "The threat of street fighting",
     AlertType.CHEMICAL: "Chemical threat",
     AlertType.NUCLEAR: "Nuclear threat",
+    AlertType.INFO: "Media reports about explosions",
 }

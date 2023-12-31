@@ -1,9 +1,20 @@
 # Changelog
 
-## [v1.3.9](https://github.com/user-sspmynxdvb/ua_alarm/tree/686ac73cc747ba4d02e305a793a60891cc5d6351) - 30.12.2023
+## [v1.3.10]() - 31.12.2023
+
+### Improved
+- **files: alert_type.py**
+
+### More info
+- **Added `AlertType.INFO: "ЗМІ повідомляють про вибухи",` and `AlertType.INFO: "Media reports about explosions",`**
+
+## [v1.3.9](https://github.com/user-sspmynxdvb/ua_alarm/tree/51f50b0c8629003c0fd60719ff400d2c7e4fb106) - 30.12.2023
 
 ### Added
 - **files: python-app.yml, test.py, .env.template**
+
+### More info
+- **Added tests**
 
 ## [v1.3.8](https://github.com/user-sspmynxdvb/ua_alarm/tree/7c4e03e055566b0af88a69de2f251750121727d4) - 29.12.2023
 
