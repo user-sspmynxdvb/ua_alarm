@@ -1,22 +1,9 @@
 # Changelog
 
-## [v1.3.9](https://github.com/user-sspmynxdvb/ua_alarm/tree/80c41cf812ce527638dd9a9cc69569fae7757ea7) - 30.12.2023
-
-### Improved
-- **files: **
-- **functions: __make_request, refactor_alert_type, alert_loop**
+## [v1.3.9](https://github.com/user-sspmynxdvb/ua_alarm/tree/686ac73cc747ba4d02e305a793a60891cc5d6351) - 30.12.2023
 
 ### Added
-- **files: python-app.yml, test.py**
-
-### More info
-- **text**
-- **text**
-- **text**
-- **text**
-- **text**
-- **text**
-- **text**
+- **files: python-app.yml, test.py, .env.template**
 
 ## [v1.3.8](https://github.com/user-sspmynxdvb/ua_alarm/tree/7c4e03e055566b0af88a69de2f251750121727d4) - 29.12.2023
 
