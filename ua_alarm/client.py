@@ -50,9 +50,6 @@ class Client:
         if not isinstance(api_token, str):
             raise ValueError(f"Invalid API token: {api_token=}")
 
-        # test request
-        run(self.__make_request("GET", self._ALERTS_ENDPOINT))
-
     async def __make_request(
             self,
             method: str,
