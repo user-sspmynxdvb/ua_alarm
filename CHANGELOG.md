@@ -1,12 +1,13 @@
 # Changelog
 
-## [v1.3.10]() - 31.12.2023
+## [v1.3.10]() - 15.01.2024
 
 ### Improved
-- **files: alert_type.py**
+- **files: alert_type.py, client.py**
 
 ### More info
 - **Added `AlertType.INFO: "ЗМІ повідомляють про вибухи",` and `AlertType.INFO: "Media reports about explosions",`**
+- **client.py: removed: init test `run(self.__make_request("GET", self._ALERTS_ENDPOINT))` and `from asyncio import run`**
 
 ## [v1.3.9](https://github.com/user-sspmynxdvb/ua_alarm/tree/51f50b0c8629003c0fd60719ff400d2c7e4fb106) - 30.12.2023
 
